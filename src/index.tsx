@@ -1,4 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
+import type { AssetConfig } from './types';
 
 const LINKING_ERROR =
   `The package 'rn-media-library' doesn't seem to be linked. Make sure: \n\n` +
@@ -16,14 +17,18 @@ const RnMediaLibraryModule = isTurboModuleEnabled
 const RnMediaLibrary = RnMediaLibraryModule
   ? RnMediaLibraryModule
   : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+    {},
+    {
+      get() {
+        throw new Error(LINKING_ERROR);
+      },
+    }
+  );
 
 export function multiply(a: number, b: number): Promise<number> {
   return RnMediaLibrary.multiply(a, b);
+}
+
+export function getAssets(a: AssetConfig): Promise<string> {
+  return RnMediaLibrary.getAssets(a);
 }

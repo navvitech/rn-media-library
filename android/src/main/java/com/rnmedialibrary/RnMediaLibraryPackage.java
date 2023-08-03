@@ -16,7 +16,7 @@ public class RnMediaLibraryPackage extends TurboReactPackage {
   @Nullable
   @Override
   public NativeModule getModule(String name, ReactApplicationContext reactContext) {
-    if (name.equals(RnMediaLibraryModule.NAME)) {
+    if (name.equals(RnMediaLibraryModuleImpl.NAME)) {
       return new RnMediaLibraryModule(reactContext);
     } else {
       return null;
@@ -29,15 +29,15 @@ public class RnMediaLibraryPackage extends TurboReactPackage {
       final Map<String, ReactModuleInfo> moduleInfos = new HashMap<>();
       boolean isTurboModule = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
       moduleInfos.put(
-              RnMediaLibraryModule.NAME,
-              new ReactModuleInfo(
-                      RnMediaLibraryModule.NAME,
-                      RnMediaLibraryModule.NAME,
-                      false, // canOverrideExistingModule
-                      false, // needsEagerInit
-                      true, // hasConstants
-                      false, // isCxxModule
-                      isTurboModule // isTurboModule
+          RnMediaLibraryModuleImpl.NAME,
+          new ReactModuleInfo(
+              RnMediaLibraryModuleImpl.NAME,
+              RnMediaLibraryModuleImpl.NAME,
+              false, // canOverrideExistingModule
+              false, // needsEagerInit
+              true, // hasConstants
+              false, // isCxxModule
+              isTurboModule // isTurboModule
       ));
       return moduleInfos;
     };
