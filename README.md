@@ -11,11 +11,14 @@ npm install rn-media-library
 ## Usage
 
 ```js
-import { multiply } from 'rn-media-library';
+import { getAssets } from 'rn-media-library';
 
 // ...
 
-const result = await multiply(3, 7);
+getAssets({ mediaType: 'audio' }).then((res) => {
+    //parse and set the value in the state
+    setAssets(JSON.parse(res));
+});
 ```
 
 ## Contributing
