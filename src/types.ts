@@ -1,6 +1,7 @@
 interface AssetConfig {
   limit?: number;
   offset?: number;
+  mediaType?: string;
 }
 
 interface Asset {
