@@ -1,7 +1,7 @@
 {
   "name": "rn-media-library",
-  "version": "0.0.1",
-  "description": "The",
+  "version": "0.0.2",
+  "description": "A React Native module that allows you to fetch and manage audios, images, vidoes.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",

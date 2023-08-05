@@ -1,6 +1,8 @@
 # rn-media-library
 
-The
+⚠️ This library is under development ⚠️
+
+A React Native module that allows you to fetch and manage audios, images, vidoes.
 
 ## Installation
 
