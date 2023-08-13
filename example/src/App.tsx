@@ -47,7 +47,10 @@ export default function App() {
         >
           <Text
             numberOfLines={1}
-            style={[styles.title, { color: item.palette[0] }]}
+            style={[
+              styles.title,
+              { color: item.palette ? item.palette[0] : 'white' },
+            ]}
           >
             {title}
           </Text>

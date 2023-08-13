@@ -25,10 +25,22 @@ const RnMediaLibrary = RnMediaLibraryModule
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return RnMediaLibrary.multiply(a, b);
+export function getAssets(assetConfig: AssetConfig): Promise<string> {
+  return RnMediaLibrary.getAssets(assetConfig);
 }
 
-export function getAssets(a: AssetConfig): Promise<string> {
-  return RnMediaLibrary.getAssets(a);
+export function deleteAsset(_id: string): Promise<string> {
+  return RnMediaLibrary.deleteAsset(_id);
+}
+
+export function shareAsset(_id: string): Promise<string> {
+  return RnMediaLibrary.shareAsset(_id);
+}
+
+export function getAudioFileInfo(_id: string): Promise<string> {
+  return RnMediaLibrary.getAudioFileInfo(_id);
+}
+
+export function deleteManyAudio(uriList: Array<String>): Promise<string> {
+  return RnMediaLibrary.deleteManyAudio(uriList);
 }

@@ -13,7 +13,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import java.util.ArrayList;
 
 public class ImageFileManager {
-  private ReactApplicationContext reactContext;
+  private final ReactApplicationContext reactContext;
 
   ImageFileManager(ReactApplicationContext context) {
     reactContext = context;
@@ -28,12 +28,9 @@ public class ImageFileManager {
     } else {
       collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     }
-    String[] projection = { MediaStore.Images.Media._ID, MediaStore.Images.Media.DATE_ADDED,
-        MediaStore.Images.Media.DATE_MODIFIED, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.MIME_TYPE,
-        MediaStore.Images.Media.RESOLUTION, MediaStore.Images.Media.SIZE };
+    String[] projection = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.MIME_TYPE, MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.Media.DATE_MODIFIED, MediaStore.Images.Media.SIZE, MediaStore.Images.Media.WIDTH, MediaStore.Images.Media.HEIGHT,};
 
-    Cursor cursor = reactContext.getContentResolver().query(collection, projection, null, null,
-        MediaStore.Images.Media.TITLE + " ASC ");
+    Cursor cursor = reactContext.getContentResolver().query(collection, projection, null, null, null);
 
     if (cursor != null) {
       int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
@@ -41,8 +38,9 @@ public class ImageFileManager {
       int dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED);
       int displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
       int mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE);
-      int resolutionColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RESOLUTION);
       int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
+      int widthColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH);
+      int heightColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT);
       if (!cursor.moveToPosition((int) offset)) {
         return null;
       }
@@ -53,15 +51,15 @@ public class ImageFileManager {
         String dateModified = cursor.getString(dateModifiedColumn);
         String displayName = cursor.getString(displayNameColumn);
         String mimeType = cursor.getString(mimeTypeColumn);
-        String resolution = cursor.getString(resolutionColumn);
         String size = cursor.getString(sizeColumn);
+        String width = cursor.getString(widthColumn);
+        String height = cursor.getString(heightColumn);
 
         Uri contentUri = getContentUri(_id);
 
         String formattedSize = formatSize(size, reactContext);
 
-        ImageFile imageFile = new ImageFile(_id, displayName, contentUri, formattedSize, mimeType, resolution,
-            dateAdded, dateModified);
+        ImageFile imageFile = new ImageFile(_id, displayName, contentUri.toString(), formattedSize, mimeType, "resolution", dateAdded, dateModified, width, height);
         tempImagesList.add(imageFile);
         cursor.moveToNext();
         i++;
