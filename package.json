@@ -49,7 +49,7 @@
   "bugs": {
     "url": "https://github.com/navvitech/rn-media-library/issues"
   },
-  "homepage": "https://github.com/navvitech/rn-media-library#readme",
+  "homepage": "https://rn-media-library-docs.vercel.app/",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
