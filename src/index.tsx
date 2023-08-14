@@ -29,18 +29,45 @@ export function getAssets(assetConfig: AssetConfig): Promise<string> {
   return RnMediaLibrary.getAssets(assetConfig);
 }
 
-export function deleteAsset(_id: string): Promise<string> {
-  return RnMediaLibrary.deleteAsset(_id);
+export function deleteAsset(assetId: string): Promise<string> {
+  return RnMediaLibrary.deleteAsset(assetId);
 }
 
-export function shareAsset(_id: string): Promise<string> {
-  return RnMediaLibrary.shareAsset(_id);
+export function shareAsset(assetId: string): Promise<string> {
+  return RnMediaLibrary.shareAsset(assetId);
 }
 
-export function getAudioFileInfo(_id: string): Promise<string> {
-  return RnMediaLibrary.getAudioFileInfo(_id);
+export function getAudioFileInfo(audioId: string): Promise<string> {
+  return RnMediaLibrary.getAudioFileInfo(audioId);
 }
 
 export function deleteManyAudio(uriList: Array<String>): Promise<string> {
   return RnMediaLibrary.deleteManyAudio(uriList);
+}
+
+export function getAudioAlbums(): Promise<string> {
+  return RnMediaLibrary.getAudioAlbums();
+}
+
+export function getAlbumAudio(albumId: String): Promise<string> {
+  return RnMediaLibrary.getAlbumAudio(albumId);
+}
+
+export function getArtists(): Promise<string> {
+  return RnMediaLibrary.getArtists();
+}
+
+export function getArtistAudio(artistId: String): Promise<string> {
+  return RnMediaLibrary.getArtistAudio(artistId);
+}
+
+export function getGenres(): Promise<string> {
+  return RnMediaLibrary.getGenres();
+}
+
+export function getGenreAudio(
+  genreId: String,
+  assetConfig: AssetConfig
+): Promise<string> {
+  return RnMediaLibrary.getGenreAudio(genreId, assetConfig);
 }

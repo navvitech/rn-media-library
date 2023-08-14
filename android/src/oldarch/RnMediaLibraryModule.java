@@ -46,4 +46,33 @@ public class RnMediaLibraryModule extends ReactContextBaseJavaModule {
     implementation.deleteManyAudio(idList, promise);
   }
 
+  @ReactMethod
+  public void getAudioAlbums(Promise promise) {
+    implementation.getAudioAlbums(promise);
+  }
+
+  @ReactMethod
+  public void getAlbumAudio(String albumId, Promise promise) {
+    implementation.getAlbumAudio(albumId, promise);
+  }
+
+  @ReactMethod
+  public void getArtists(Promise promise) {
+    implementation.getArtists(promise);
+  }
+
+  @ReactMethod
+  public void getArtistAudio(String artistId, Promise promise) {
+    implementation.getArtistAudio(artistId, promise);
+  }
+
+  @ReactMethod
+  public void getGenres(Promise promise) {
+    implementation.getGenres(promise);
+  }
+
+  @ReactMethod
+  public void getGenreAudio(String genreId, ReadableMap map, Promise promise) {
+    implementation.getGenreAudio(genreId, map, promise);
+  }
 }

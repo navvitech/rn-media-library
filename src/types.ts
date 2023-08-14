@@ -19,7 +19,29 @@ interface Asset {
   palette: Array<string>;
 }
 
-interface AssetInfo {
+interface Album {
+  _id: string;
+  title: string;
+  artwork: string;
+  artist: string;
+  numSongs: number;
+}
+
+interface Artist {
+  _id: string;
+  name: string;
+  numTracks: number;
+  numAlbums: number;
+}
+
+interface Genre {
+  _id: string;
+  genre: string;
+  numTracks: number;
+  artwork: string;
+}
+
+interface AudioFileInfo {
   _id: string;
   title: string;
   displayName: string;
@@ -49,4 +71,13 @@ interface Error {
   code: string;
 }
 
-export type { AssetConfig, Asset, Assets, Error, AssetInfo };
+export type {
+  AssetConfig,
+  Asset,
+  Album,
+  Artist,
+  Genre,
+  Assets,
+  Error,
+  AudioFileInfo,
+};

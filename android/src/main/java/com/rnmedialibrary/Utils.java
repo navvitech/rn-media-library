@@ -13,6 +13,7 @@ import android.util.Log;
 import androidx.palette.graphics.Palette;
 
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReadableMap;
 
 import java.util.ArrayList;
 
@@ -62,5 +63,20 @@ public class Utils {
       Log.e("bitmap failure", e.toString());
       return null;
     }
+  }
+
+  public static ArrayList<Integer> getLimitOffset(ReadableMap map) {
+    ArrayList<Integer> array = new ArrayList<>();
+    int limit = 50, offset = 0;
+
+    if (map.hasKey("limit")) {
+      limit = map.getInt("limit");
+    }
+    if (map.hasKey("offset")) {
+      offset = map.getInt("offset");
+    }
+    array.add(limit);
+    array.add(offset);
+    return array;
   }
 }

@@ -1,10 +1,14 @@
 package com.rnmedialibrary;
 
+import static com.rnmedialibrary.Utils.getLimitOffset;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 public class RnMediaLibraryModuleImpl {
   public static final String NAME = "RnMediaLibrary";
@@ -21,14 +25,12 @@ public class RnMediaLibraryModuleImpl {
   // React Native Methods
   public void getAssets(ReadableMap map, Promise promise) {
     try {
-      double limit = 50, offset = 0;
+      ArrayList<Integer> limitOffset = getLimitOffset(map);
+      int limit = limitOffset.get(0);
+      int offset = limitOffset.get(1);
+
       String mediaType = "audio";
-      if (map.hasKey("limit")) {
-        limit = map.getDouble("limit");
-      }
-      if (map.hasKey("offset")) {
-        offset = map.getDouble("offset");
-      }
+
       if (map.hasKey("mediaType")) {
         mediaType = map.getString("mediaType");
       }
@@ -93,6 +95,94 @@ public class RnMediaLibraryModuleImpl {
         securityException);
     } catch (Exception e) {
       promise.reject(Constants.UNKNOWN_ERROR, "Failed to read audio file info", e);
+    }
+  }
+
+  public void getAudioAlbums(Promise promise) {
+    try {
+      ArrayList<AudioAlbum> audioAlbums = audioFileManagerImplementation.getAudioAlbums();
+      String json = gson.toJson(audioAlbums);
+      promise.resolve(json);
+    } catch (SecurityException securityException) {
+      promise.reject(Constants.ERROR_UNABLE_TO_LOAD_PERMISSION, "Could not read assets: require READ_EXTERNAL_STORAGE permission.", // need to edit message according to
+        // android versions
+        securityException);
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read assets", e);
+    }
+  }
+
+  public void getAlbumAudio(String albumId, Promise promise) {
+    try {
+      Data<AudioFile> albumAudio = audioFileManagerImplementation.getAlbumAudio(albumId);
+      String json = gson.toJson(albumAudio);
+      promise.resolve(json);
+    } catch (SecurityException securityException) {
+      promise.reject(Constants.ERROR_UNABLE_TO_LOAD_PERMISSION, "Could not read assets: require READ_EXTERNAL_STORAGE permission.", // need to edit message according to
+        // android versions
+        securityException);
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read assets", e);
+    }
+  }
+
+  public void getArtists(Promise promise) {
+    try {
+      ArrayList<Artist> artists = audioFileManagerImplementation.getArtists();
+      String json = gson.toJson(artists);
+      promise.resolve(json);
+    } catch (SecurityException securityException) {
+      promise.reject(Constants.ERROR_UNABLE_TO_LOAD_PERMISSION, "Could not read assets: require READ_EXTERNAL_STORAGE permission.", // need to edit message according to
+        // android versions
+        securityException);
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read assets", e);
+    }
+  }
+
+  public void getArtistAudio(String artistId, Promise promise) {
+    try {
+      Data<AudioFile> artistAudio = audioFileManagerImplementation.getArtistAudio(artistId);
+      String json = gson.toJson(artistAudio);
+      promise.resolve(json);
+    } catch (SecurityException securityException) {
+      promise.reject(Constants.ERROR_UNABLE_TO_LOAD_PERMISSION, "Could not read assets: require READ_EXTERNAL_STORAGE permission.", // need to edit message according to
+        // android versions
+        securityException);
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read assets", e);
+    }
+  }
+
+  public void getGenres(Promise promise) {
+    try {
+      ArrayList<Genre> genres = audioFileManagerImplementation.getGenres();
+      String json = gson.toJson(genres);
+      promise.resolve(json);
+    } catch (SecurityException securityException) {
+      promise.reject(Constants.ERROR_UNABLE_TO_LOAD_PERMISSION, "Could not read assets: require READ_EXTERNAL_STORAGE permission.", // need to edit message according to
+        // android versions
+        securityException);
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read assets", e);
+    }
+  }
+
+  public void getGenreAudio(String genreId, ReadableMap map, Promise promise) {
+    try {
+      ArrayList<Integer> limitOffset = getLimitOffset(map);
+      int limit = limitOffset.get(0);
+      int offset = limitOffset.get(1);
+
+      Data<AudioFile> genreAudio = audioFileManagerImplementation.getGenreAudio(genreId,limit,offset);
+      String json = gson.toJson(genreAudio);
+      promise.resolve(json);
+    } catch (SecurityException securityException) {
+      promise.reject(Constants.ERROR_UNABLE_TO_LOAD_PERMISSION, "Could not read assets: require READ_EXTERNAL_STORAGE permission.", // need to edit message according to
+        // android versions
+        securityException);
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read assets", e);
     }
   }
 }
