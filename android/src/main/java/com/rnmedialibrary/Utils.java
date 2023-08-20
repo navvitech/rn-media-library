@@ -17,18 +17,18 @@ import com.facebook.react.bridge.ReadableMap;
 
 import java.util.ArrayList;
 
-public class Utils {
-  public static Uri getContentUri(String _id) {
+class Utils {
+  static Uri getContentUriById(String _id) {
     Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Long.parseLong(_id));
     return contentUri;
   }
 
-  public static String formatSize(String size, ReactApplicationContext context) {
-    String formattedSize = Formatter.formatFileSize(context, Long.parseLong(size));
+  static String formatSize(Long size, ReactApplicationContext context) {
+    String formattedSize = Formatter.formatFileSize(context, size);
     return formattedSize;
   }
 
-  public static String getGenre(Uri audioUri, ReactApplicationContext context) {
+  static String getGenre(Uri audioUri, ReactApplicationContext context) {
     MediaMetadataRetriever retriever = new MediaMetadataRetriever();
     retriever.setDataSource(context, audioUri);
     String Genre = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
@@ -48,7 +48,7 @@ public class Utils {
     return format;
   }
 
-  public static ArrayList<String> getColorFromUri(Uri uri, Context mContext) {
+  static ArrayList<String> getColorFromUri(Uri uri, Context mContext) {
     try {
       Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
       ArrayList<String> colors = new ArrayList<>();
@@ -65,7 +65,7 @@ public class Utils {
     }
   }
 
-  public static ArrayList<Integer> getLimitOffset(ReadableMap map) {
+  static ArrayList<Integer> getLimitOffset(ReadableMap map) {
     ArrayList<Integer> array = new ArrayList<>();
     int limit = 50, offset = 0;
 

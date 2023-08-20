@@ -1,7 +1,7 @@
 package com.rnmedialibrary;
 
 import static com.rnmedialibrary.Utils.formatSize;
-import static com.rnmedialibrary.Utils.getContentUri;
+import static com.rnmedialibrary.Utils.getContentUriById;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -51,11 +51,11 @@ public class ImageFileManager {
         String dateModified = cursor.getString(dateModifiedColumn);
         String displayName = cursor.getString(displayNameColumn);
         String mimeType = cursor.getString(mimeTypeColumn);
-        String size = cursor.getString(sizeColumn);
+        long size = cursor.getLong(sizeColumn);
         String width = cursor.getString(widthColumn);
         String height = cursor.getString(heightColumn);
 
-        Uri contentUri = getContentUri(_id);
+        Uri contentUri = getContentUriById(_id);
 
         String formattedSize = formatSize(size, reactContext);
 

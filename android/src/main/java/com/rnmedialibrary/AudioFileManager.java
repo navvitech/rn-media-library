@@ -2,7 +2,7 @@ package com.rnmedialibrary;
 
 import static com.rnmedialibrary.Utils.formatSize;
 import static com.rnmedialibrary.Utils.getColorFromUri;
-import static com.rnmedialibrary.Utils.getContentUri;
+import static com.rnmedialibrary.Utils.getContentUriById;
 import static com.rnmedialibrary.Utils.getGenre;
 
 import android.app.Activity;
@@ -62,7 +62,7 @@ public class AudioFileManager {
     Activity currentActivity = reactContext.getCurrentActivity();
     ContentResolver resolver = reactContext.getContentResolver();
 
-    Uri contentUri = getContentUri(audioId);
+    Uri contentUri = getContentUriById(audioId);
     String selection = MediaStore.Audio.Media._ID + " = ?";
     String[] selectionArgs = new String[] { audioId };
     String[] projection = { MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID };
@@ -97,7 +97,7 @@ public class AudioFileManager {
       return;
     }
 
-    Uri contentUri = getContentUri(audioId);
+    Uri contentUri = getContentUriById(audioId);
     String selection = MediaStore.Audio.Media._ID + " = ?";
     String[] selectionArgs = new String[] { audioId };
 
@@ -199,7 +199,7 @@ public class AudioFileManager {
         long albumId = cursor.getLong(albumIdColumnIndex);
         String path = cursor.getString(pathColumnIndex);
 
-        Uri contentUri = getContentUri(_id);
+        Uri contentUri = getContentUriById(_id);
         String album_art1 = ContentUris.withAppendedId(albumArtUri, albumId).toString();
         String album_art2 = Uri.parse("content://media/external/audio/media/" + _id + "/albumart").toString();
         ArrayList<String> palette = getColorFromUri(Uri.parse(album_art1), reactContext);
@@ -222,7 +222,7 @@ public class AudioFileManager {
   }
 
   public void shareSong(String audioId, Promise promise) {
-    Uri uri = getContentUri(audioId);
+    Uri uri = getContentUriById(audioId);
     Activity currentActivity = reactContext.getCurrentActivity();
     if (currentActivity == null) {
       Log.e(null, "Activity doesn't exist");
@@ -272,14 +272,14 @@ public class AudioFileManager {
         String title = cursor.getString(titleColumnIndex);
         String displayName = cursor.getString(displayNameColumnIndex);
         String artist = cursor.getString(artistColumnIndex);
-        String size = cursor.getString(sizeColumnIndex);
+        long size = cursor.getLong(sizeColumnIndex);
         String duration = cursor.getString(durationColumnIndex);
         String album = cursor.getString(albumColumnIndex);
         long albumId = cursor.getLong(albumIdColumnIndex);
         String mimeType = cursor.getString(mimeTypeColumnIndex);
         String path = cursor.getString(pathColumnIndex);
 
-        Uri contentUri = getContentUri(_id);
+        Uri contentUri = getContentUriById(_id);
         String album_art1 = ContentUris.withAppendedId(albumArtUri, albumId).toString();
         String album_art2 = Uri.parse("content://media/external/audio/media/" + _id + "/albumart").toString();
         String formattedSize = formatSize(size, reactContext);
@@ -469,7 +469,7 @@ public class AudioFileManager {
         long albumId = cursor.getLong(albumIdColumnIndex);
         String path = cursor.getString(pathColumnIndex);
 
-        Uri contentUri = getContentUri(_id);
+        Uri contentUri = getContentUriById(_id);
         String album_art1 = ContentUris.withAppendedId(albumArtUri, albumId).toString();
         String album_art2 = Uri.parse("content://media/external/audio/media/" + _id + "/albumart").toString();
         ArrayList<String> palette = getColorFromUri(Uri.parse(album_art1), reactContext);
