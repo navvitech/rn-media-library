@@ -71,3 +71,15 @@ export function getGenreAudio(
 ): Promise<string> {
   return RnMediaLibrary.getGenreAudio(genreId, assetConfig);
 }
+
+export function getFoldersAndFiles(path: String): Promise<string> {
+  return RnMediaLibrary.getFoldersAndFiles(path);
+}
+
+export function requestAllFileAccessPermission(): Promise<void> {
+  return RnMediaLibrary.requestAllFileAccessPermission();
+}
+
+export function checkAllFileAccessPermission(): Promise<boolean> {
+  return RnMediaLibrary.checkAllFileAccessPermission();
+}

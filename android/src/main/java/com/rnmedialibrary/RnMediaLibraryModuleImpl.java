@@ -2,6 +2,9 @@ package com.rnmedialibrary;
 
 import static com.rnmedialibrary.Utils.getLimitOffset;
 
+import android.os.Build;
+import android.os.Environment;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
@@ -9,17 +12,20 @@ import com.facebook.react.bridge.ReadableMap;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RnMediaLibraryModuleImpl {
   public static final String NAME = "RnMediaLibrary";
   private final AudioFileManager audioFileManagerImplementation;
   private final ImageFileManager imageFileManagerImplementation;
+  private final FileManager fileManagerImplementation;
 
   private final Gson gson = new Gson();
 
   RnMediaLibraryModuleImpl(ReactApplicationContext context) {
     audioFileManagerImplementation = new AudioFileManager(context);
     imageFileManagerImplementation = new ImageFileManager(context);
+    fileManagerImplementation = new FileManager(context);
   }
 
   // React Native Methods
@@ -58,6 +64,43 @@ public class RnMediaLibraryModuleImpl {
     }
   }
 
+  public void getFoldersAndFiles(String path, Promise promise) {
+    String array;
+    try {
+      if (Objects.equals(path, "/")) {
+        array = fileManagerImplementation.getAllRootDirectories();
+      } else {
+        array = fileManagerImplementation.getFoldersFilesInsideDirectory(path);
+      }
+      promise.resolve(array);
+      return;
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read assets", e);
+    }
+  }
+
+  public void requestAllFileAccessPermission(Promise promise) {
+    try {
+      fileManagerImplementation.requestAllFileAccess();
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read assets", e);
+    }
+  }
+
+  public void checkAllFileAccessPermission(Promise promise) {
+    try {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Environment.isExternalStorageManager()) {
+          promise.resolve(true);
+        } else {
+          promise.resolve(false);
+        }
+      }
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read assets", e);
+    }
+  }
+
   public void deleteAsset(String _id, Promise promise) {
     try {
       audioFileManagerImplementation.deleteAudio(_id, promise);
@@ -69,7 +112,11 @@ public class RnMediaLibraryModuleImpl {
   }
 
   public void shareAsset(String _id, Promise promise) {
-    audioFileManagerImplementation.shareSong(_id, promise);
+    try {
+      audioFileManagerImplementation.shareSong(_id, promise);
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, "Failed to read audio file info", e);
+    }
   }
 
   public void getAudioFileInfo(String _id, Promise promise) {
@@ -174,7 +221,7 @@ public class RnMediaLibraryModuleImpl {
       int limit = limitOffset.get(0);
       int offset = limitOffset.get(1);
 
-      Data<AudioFile> genreAudio = audioFileManagerImplementation.getGenreAudio(genreId,limit,offset);
+      Data<AudioFile> genreAudio = audioFileManagerImplementation.getGenreAudio(genreId, limit, offset);
       String json = gson.toJson(genreAudio);
       promise.resolve(json);
     } catch (SecurityException securityException) {

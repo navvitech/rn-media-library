@@ -75,4 +75,19 @@ public class RnMediaLibraryModule extends ReactContextBaseJavaModule {
   public void getGenreAudio(String genreId, ReadableMap map, Promise promise) {
     implementation.getGenreAudio(genreId, map, promise);
   }
+
+  @ReactMethod
+  public void getFoldersAndFiles(String path, Promise promise) {
+    implementation.getFoldersAndFiles(path, promise);
+  }
+
+  @ReactMethod
+  public void requestAllFileAccessPermission(Promise promise) {
+    implementation.requestAllFileAccessPermission(promise);
+  }
+
+  @ReactMethod
+  public void checkAllFileAccessPermission(Promise promise) {
+    implementation.checkAllFileAccessPermission(promise);
+  }
 }

@@ -15,6 +15,7 @@ import androidx.palette.graphics.Palette;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableMap;
 
+import java.io.File;
 import java.util.ArrayList;
 
 class Utils {
@@ -78,5 +79,20 @@ class Utils {
     array.add(limit);
     array.add(offset);
     return array;
+  }
+
+  static int getItemCount(String directoryPath) {
+    File directory = new File(directoryPath);
+    int itemCount = 0;
+
+    if (directory.exists() && directory.isDirectory()) {
+      File[] files = directory.listFiles();
+
+      if (files != null) {
+        itemCount = files.length;
+      }
+    }
+
+    return itemCount;
   }
 }
