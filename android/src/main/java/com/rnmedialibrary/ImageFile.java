@@ -12,7 +12,7 @@ public class ImageFile {
   private final String width;
   private final String height;
 
-  public ImageFile(String _id, String displayName, String uri, String size, String mimeType, String resolution, String dateAdded, String dateModified, String width, String height) {
+   ImageFile(String _id, String displayName, String uri, String size, String mimeType, String resolution, String dateAdded, String dateModified, String width, String height) {
     this._id = _id;
     this.displayName = displayName;
     this.uri = uri;

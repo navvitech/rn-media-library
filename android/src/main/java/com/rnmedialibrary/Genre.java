@@ -6,7 +6,7 @@ public class Genre {
   private int numTracks;
   private String artwork;
 
-  public Genre(String genre_id, String genre, int numTracks, String artwork) {
+   Genre(String genre_id, String genre, int numTracks, String artwork) {
     this.genre = genre;
     this.id = genre_id;
     this.numTracks = numTracks;

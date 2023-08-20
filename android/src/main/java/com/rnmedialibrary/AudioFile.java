@@ -2,7 +2,7 @@ package com.rnmedialibrary;
 
 import java.util.ArrayList;
 
-public class AudioFile {
+class AudioFile {
   private final String _id;
   private final String title;
   private final String displayName;
@@ -15,8 +15,8 @@ public class AudioFile {
   private final String artwork2;
   private final ArrayList<String> palette;
 
-
-  public AudioFile(String _id, String title, String displayName, String artist, String duration, String album, String path, String uri, String artwork, String artwork2, ArrayList<String> palette) {
+   AudioFile(String _id, String title, String displayName, String artist, String duration, String album,
+      String path, String uri, String artwork, String artwork2, ArrayList<String> palette) {
     this._id = _id;
     this.title = title;
     this.displayName = displayName;

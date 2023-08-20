@@ -1,6 +1,6 @@
 package com.rnmedialibrary;
 
-public class AudioFileInfo {
+class AudioFileInfo {
   private final String _id;
   private final String title;
   private final String displayName;
@@ -15,7 +15,8 @@ public class AudioFileInfo {
   private final String artwork2;
   private final String genre;
 
-  public AudioFileInfo(String _id, String title, String displayName, String artist, String size, String duration, String album, String mimeType, String path, String uri, String artwork, String artwork2, String genre) {
+   AudioFileInfo(String _id, String title, String displayName, String artist, String size, String duration,
+      String album, String mimeType, String path, String uri, String artwork, String artwork2, String genre) {
     this._id = _id;
     this.title = title;
     this.displayName = displayName;

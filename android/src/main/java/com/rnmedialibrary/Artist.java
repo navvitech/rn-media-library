@@ -6,7 +6,7 @@ class Artist {
   private int numTracks;
   private int numAlbums;
 
-  public Artist(String _id, String name, int numTracks, int numAlbums) {
+  Artist(String _id, String name, int numTracks, int numAlbums) {
     this._id = _id;
     this.name = name;
     this.numTracks = numTracks;

@@ -1,6 +1,6 @@
 package com.rnmedialibrary;
 
-public class Constants {
+class Constants {
   static final String READ = "APP_READ";
   static final String UPDATE = "APP_UPDATE";
   static final String DELETEONE = "APP_DELETEONE";
