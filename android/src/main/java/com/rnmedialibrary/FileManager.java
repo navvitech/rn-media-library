@@ -24,7 +24,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Objects;
 
-
 class FileManager {
   private final ReactApplicationContext reactContext;
   private final Gson gson = new Gson();
@@ -34,35 +33,19 @@ class FileManager {
   }
 
   public String getAllRootDirectories() {
-    class Root {
-      final String path;
-      final String parent;
-      final String name;
-      final String freeSpace;
-      final String usableSpace;
-      final String totalSpace;
-
-      Root(String path, String parent, String name, String freeSpace, String usableSpace, String totalSpace) {
-        this.path = path;
-        this.parent = parent;
-        this.name = name;
-        this.freeSpace = freeSpace;
-        this.usableSpace = usableSpace;
-        this.totalSpace = totalSpace;
-      }
-    }
-
     StorageManager storageManager = (StorageManager) reactContext.getSystemService(Context.STORAGE_SERVICE);
     StorageVolume[] storageVolumes = storageManager.getStorageVolumes().toArray(new StorageVolume[0]);
-    ArrayList<Root> tempDirectoryList = new ArrayList<>();
+    ArrayList<RootDirectories> tempDirectoryList = new ArrayList<>();
 
     for (StorageVolume storageVolume : storageVolumes) {
       File rootDirectory = null;
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         rootDirectory = storageVolume.getDirectory();
+      } else {
+        rootDirectory = Environment.getExternalStorageDirectory();
       }
-      if (rootDirectory != null) {
 
+      if (rootDirectory != null) {
         String path = rootDirectory.getAbsolutePath();
         String parent = rootDirectory.getParent();
         String name = rootDirectory.getName();
@@ -70,7 +53,7 @@ class FileManager {
         String usableSpace = Utils.formatSize(rootDirectory.getUsableSpace(), reactContext);
         String totalSpace = Utils.formatSize(rootDirectory.getTotalSpace(), reactContext);
 
-        Root rootDirectoryInfo = new Root(path, parent, name, freeSpace, usableSpace, totalSpace);
+        RootDirectories rootDirectoryInfo = new RootDirectories(path, parent, name, freeSpace, usableSpace, totalSpace);
         tempDirectoryList.add(rootDirectoryInfo);
       }
     }
@@ -186,7 +169,6 @@ class FileManager {
 
     private final String uri;
     private final String size;
-
 
     FileInfo(String id, String title, String mimeType, long dateAdded, long dateModified, String uri, String size) {
       super(title, dateAdded, dateModified, false);
