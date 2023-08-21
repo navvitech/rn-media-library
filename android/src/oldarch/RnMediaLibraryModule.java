@@ -47,13 +47,13 @@ public class RnMediaLibraryModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void getAudioAlbums(Promise promise) {
-    implementation.getAudioAlbums(promise);
+  public void getAlbums(ReadableMap map, Promise promise) {
+    implementation.getAlbums(map, promise);
   }
 
   @ReactMethod
-  public void getAlbumAudio(String albumId, Promise promise) {
-    implementation.getAlbumAudio(albumId, promise);
+  public void getAlbumAssets(ReadableMap map, String id, Promise promise) {
+    implementation.getAlbumAssets(map, id, promise);
   }
 
   @ReactMethod

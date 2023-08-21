@@ -4,6 +4,10 @@ interface AssetConfig {
   mediaType?: string;
 }
 
+interface AlbumConfig {
+  mediaType?: string;
+}
+
 interface Asset {
   _id: string;
   title: string;
@@ -73,6 +77,7 @@ interface Error {
 
 export type {
   AssetConfig,
+  AlbumConfig,
   Asset,
   Album,
   Artist,

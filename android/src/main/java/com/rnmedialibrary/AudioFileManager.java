@@ -22,6 +22,7 @@ import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 public class AudioFileManager {
 
   private final ReactApplicationContext reactContext;
+  private final Gson gson = new Gson();
   private Promise deletionPromise;
 
   AudioFileManager(ReactApplicationContext context) {
@@ -64,8 +66,8 @@ public class AudioFileManager {
 
     Uri contentUri = getContentUriById(audioId);
     String selection = MediaStore.Audio.Media._ID + " = ?";
-    String[] selectionArgs = new String[] { audioId };
-    String[] projection = { MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID };
+    String[] selectionArgs = new String[]{audioId};
+    String[] projection = {MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID};
     Uri collection = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
     Cursor cursor = reactContext.getContentResolver().query(collection, projection, selection, selectionArgs, null);
@@ -99,7 +101,7 @@ public class AudioFileManager {
 
     Uri contentUri = getContentUriById(audioId);
     String selection = MediaStore.Audio.Media._ID + " = ?";
-    String[] selectionArgs = new String[] { audioId };
+    String[] selectionArgs = new String[]{audioId};
 
     ArrayList<Uri> uri = new ArrayList<>();
     uri.add(contentUri);
@@ -165,11 +167,8 @@ public class AudioFileManager {
       collection = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
     }
 
-    String[] projection = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
-        MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DURATION,
-        MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA };
-    Cursor cursor = reactContext.getContentResolver().query(collection, projection, selection, selectionArgs,
-        MediaStore.Audio.Media.TITLE + " ASC ");
+    String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA};
+    Cursor cursor = reactContext.getContentResolver().query(collection, projection, selection, selectionArgs, MediaStore.Audio.Media.TITLE + " ASC ");
 
     if (limit == 0) {
       limit = cursor.getCount();
@@ -204,8 +203,7 @@ public class AudioFileManager {
         String album_art2 = Uri.parse("content://media/external/audio/media/" + _id + "/albumart").toString();
         ArrayList<String> palette = getColorFromUri(Uri.parse(album_art1), reactContext);
 
-        AudioFile musicFile = new AudioFile(_id, title, displayName, artist, duration, album, path,
-            contentUri.toString(), album_art1, album_art2, palette);
+        AudioFile musicFile = new AudioFile(_id, title, displayName, artist, duration, album, path, contentUri.toString(), album_art1, album_art2, palette);
         tempAudioList.add(musicFile);
         cursor.moveToNext();
         i++;
@@ -217,8 +215,8 @@ public class AudioFileManager {
     return data;
   }
 
-  public Data<AudioFile> getData(int limit, int offset) {
-    return getAudioFiles(limit, offset, null, null);
+  public String getData(int limit, int offset) {
+    return gson.toJson(getAudioFiles(limit, offset, null, null));
   }
 
   public void shareSong(String audioId, Promise promise) {
@@ -235,13 +233,13 @@ public class AudioFileManager {
     currentActivity.startActivity(Intent.createChooser(shareIntent, null));
   }
 
-  public AudioFileInfo getAudioFileInfo(String audioId) {
+  String getAudioFileInfo(String audioId) {
     Uri collection;
     AudioFileInfo audioFile = null;
     final Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
 
     String selection = MediaStore.Audio.Media._ID + " = ?";
-    String[] selectionArgs = new String[] { audioId };
+    String[] selectionArgs = new String[]{audioId};
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       collection = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
@@ -249,10 +247,7 @@ public class AudioFileManager {
       collection = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
     }
 
-    String[] projection = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
-        MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.SIZE,
-        MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ALBUM_ID,
-        MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.MIME_TYPE };
+    String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.SIZE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.MIME_TYPE};
     Cursor cursor = reactContext.getContentResolver().query(collection, projection, selection, selectionArgs, null);
 
     if (cursor != null) {
@@ -285,8 +280,7 @@ public class AudioFileManager {
         String formattedSize = formatSize(size, reactContext);
         String genre = getGenre(contentUri, reactContext);
 
-        audioFile = new AudioFileInfo(_id, title, displayName, artist, formattedSize, duration, album, mimeType, path,
-            contentUri.toString(), album_art1, album_art2, genre);
+        audioFile = new AudioFileInfo(_id, title, displayName, artist, formattedSize, duration, album, mimeType, path, contentUri.toString(), album_art1, album_art2, genre);
 
         cursor.moveToNext();
       }
@@ -294,10 +288,10 @@ public class AudioFileManager {
       cursor.close();
     }
 
-    return audioFile;
+    return gson.toJson(audioFile);
   }
 
-  public ArrayList<AudioAlbum> getAudioAlbums() {
+  String getAudioAlbums() {
     Uri uri;
     ArrayList<AudioAlbum> tempAlbumList = new ArrayList<>();
     final Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
@@ -308,11 +302,9 @@ public class AudioFileManager {
       uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
     }
 
-    String[] projection = { MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ARTIST,
-        MediaStore.Audio.Albums.NUMBER_OF_SONGS, };
+    String[] projection = {MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.NUMBER_OF_SONGS,};
 
-    Cursor cursor = reactContext.getContentResolver().query(uri, projection, null, null,
-        MediaStore.Audio.Media.ALBUM + " ASC ");
+    Cursor cursor = reactContext.getContentResolver().query(uri, projection, null, null, MediaStore.Audio.Media.ALBUM + " ASC ");
     if (cursor != null) {
       int idColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums._ID);
       int titleColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM);
@@ -331,16 +323,16 @@ public class AudioFileManager {
       }
       cursor.close();
     }
-    return tempAlbumList;
+    return gson.toJson(tempAlbumList);
   }
 
-  public Data<AudioFile> getAlbumAudio(String albumId) {
+  public String getAlbumAudio(String albumId) {
     String selection = MediaStore.Audio.Media.ALBUM_ID + " = ?";
-    String[] selectionArgs = new String[] { albumId };
-    return getAudioFiles(0, 0, selection, selectionArgs);
+    String[] selectionArgs = new String[]{String.valueOf(albumId)};
+    return gson.toJson(getAudioFiles(0, 0, selection, selectionArgs));
   }
 
-  public ArrayList<Artist> getArtists() {
+  public String getArtists() {
     Uri uri;
     ArrayList<Artist> tempArtistList = new ArrayList<>();
 
@@ -350,11 +342,9 @@ public class AudioFileManager {
       uri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
     }
 
-    String[] projection = { MediaStore.Audio.Artists._ID, MediaStore.Audio.Artists.ARTIST,
-        MediaStore.Audio.Artists.NUMBER_OF_TRACKS, MediaStore.Audio.Artists.NUMBER_OF_ALBUMS, };
+    String[] projection = {MediaStore.Audio.Artists._ID, MediaStore.Audio.Artists.ARTIST, MediaStore.Audio.Artists.NUMBER_OF_TRACKS, MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,};
 
-    Cursor cursor = reactContext.getContentResolver().query(uri, projection, null, null,
-        MediaStore.Audio.Artists.ARTIST + " ASC ");
+    Cursor cursor = reactContext.getContentResolver().query(uri, projection, null, null, MediaStore.Audio.Artists.ARTIST + " ASC ");
 
     if (cursor != null) {
       int idColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Artists._ID);
@@ -373,16 +363,16 @@ public class AudioFileManager {
       }
       cursor.close();
     }
-    return tempArtistList;
+    return gson.toJson(tempArtistList);
   }
 
-  public Data<AudioFile> getArtistAudio(String artistId) {
+  public String getArtistAudio(String artistId) {
     String selection = MediaStore.Audio.Media.ARTIST_ID + " = ?";
-    String[] selectionArgs = new String[] { artistId };
-    return getAudioFiles(0, 0, selection, selectionArgs);
+    String[] selectionArgs = new String[]{artistId};
+    return gson.toJson(getAudioFiles(0, 0, selection, selectionArgs));
   }
 
-  public ArrayList<Genre> getGenres() {
+  public String getGenres() {
     Uri uri, genreSongsUri;
     ArrayList<Genre> tempArtistList = new ArrayList<>();
     final Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
@@ -393,9 +383,8 @@ public class AudioFileManager {
       uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
     }
 
-    String[] projection = { MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME };
-    Cursor cursor = reactContext.getContentResolver().query(uri, projection, null, null,
-        MediaStore.Audio.Genres.NAME + " ASC ");
+    String[] projection = {MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME};
+    Cursor cursor = reactContext.getContentResolver().query(uri, projection, null, null, MediaStore.Audio.Genres.NAME + " ASC ");
     if (cursor != null) {
       int idColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID);
       int nameColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME);
@@ -405,13 +394,12 @@ public class AudioFileManager {
         String name = cursor.getString(nameColumnIndex);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-          genreSongsUri = MediaStore.Audio.Genres.Members.getContentUri(MediaStore.VOLUME_EXTERNAL,
-              Long.parseLong(_id));
+          genreSongsUri = MediaStore.Audio.Genres.Members.getContentUri(MediaStore.VOLUME_EXTERNAL, Long.parseLong(_id));
         } else {
           genreSongsUri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
         }
 
-        String[] songProjection = { MediaStore.Audio.Media.ALBUM_ID };
+        String[] songProjection = {MediaStore.Audio.Media.ALBUM_ID};
         Cursor songCursor = reactContext.getContentResolver().query(genreSongsUri, songProjection, null, null, null);
 
         int songCount = 0;
@@ -431,18 +419,16 @@ public class AudioFileManager {
       }
       cursor.close();
     }
-    return tempArtistList;
+    return gson.toJson(tempArtistList);
   }
 
-  public Data<AudioFile> getGenreAudio(String genreId, int limit, int offset) {
+  public String getGenreAudio(String genreId, int limit, int offset) {
     Data<AudioFile> data = null;
     ArrayList<AudioFile> tempAudioList = new ArrayList<>();
     final Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
     Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", Long.parseLong(genreId));
 
-    String[] projection = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
-        MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DURATION,
-        MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA, };
+    String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA,};
     Cursor cursor = reactContext.getContentResolver().query(uri, projection, null, null, null);
 
     if (cursor != null) {
@@ -474,8 +460,7 @@ public class AudioFileManager {
         String album_art2 = Uri.parse("content://media/external/audio/media/" + _id + "/albumart").toString();
         ArrayList<String> palette = getColorFromUri(Uri.parse(album_art1), reactContext);
 
-        AudioFile musicFile = new AudioFile(_id, title, displayName, artist, duration, album, path,
-            contentUri.toString(), album_art1, album_art2, palette);
+        AudioFile musicFile = new AudioFile(_id, title, displayName, artist, duration, album, path, contentUri.toString(), album_art1, album_art2, palette);
         tempAudioList.add(musicFile);
         cursor.moveToNext();
         i++;
@@ -484,6 +469,6 @@ public class AudioFileManager {
       data = new Data<>(tempAudioList, !cursor.isAfterLast(), cursor.getPosition(), cursor.getCount());
       cursor.close();
     }
-    return data;
+    return gson.toJson(data);
   }
 }

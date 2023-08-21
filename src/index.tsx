@@ -1,5 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
-import type { AssetConfig } from './types';
+import type { AssetConfig, AlbumConfig } from './types';
 
 const LINKING_ERROR =
   `The package 'rn-media-library' doesn't seem to be linked. Make sure: \n\n` +
@@ -45,12 +45,15 @@ export function deleteManyAudio(uriList: Array<String>): Promise<string> {
   return RnMediaLibrary.deleteManyAudio(uriList);
 }
 
-export function getAudioAlbums(): Promise<string> {
-  return RnMediaLibrary.getAudioAlbums();
+export function getAlbums(albumConfig: AlbumConfig): Promise<string> {
+  return RnMediaLibrary.getAlbums(albumConfig);
 }
 
-export function getAlbumAudio(albumId: String): Promise<string> {
-  return RnMediaLibrary.getAlbumAudio(albumId);
+export function getAlbumAssets(
+  assetConfig: AssetConfig,
+  id: String
+): Promise<string> {
+  return RnMediaLibrary.getAlbumAssets(assetConfig, id);
 }
 
 export function getArtists(): Promise<string> {
