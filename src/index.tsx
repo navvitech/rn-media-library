@@ -86,3 +86,5 @@ export function requestAllFileAccessPermission(): Promise<void> {
 export function checkAllFileAccessPermission(): Promise<boolean> {
   return RnMediaLibrary.checkAllFileAccessPermission();
 }
+
+export const MEDIA_TYPE = NativeModules.RnMediaLibrary.MEDIA_TYPE;

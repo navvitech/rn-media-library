@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
   ActivityIndicator,
 } from 'react-native';
-import { getAssets } from 'rn-media-library';
+import { getAssets, MEDIA_TYPE } from 'rn-media-library';
 import type { Assets, Asset } from 'src/types';
 
 export default function App() {
@@ -18,7 +18,7 @@ export default function App() {
 
   React.useEffect(() => {
     setLoading(true);
-    getAssets({ mediaType: 'audio' }).then((res) => {
+    getAssets({ mediaType: MEDIA_TYPE.AUDIO }).then((res) => {
       setAssets(JSON.parse(res));
       setLoading(false);
     });

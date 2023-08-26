@@ -76,25 +76,27 @@ class FileManager {
     ArrayList<FileInfo> tempFiles = fetchFilesFromFolder(directory.getName() + "/");
     ArrayList<Folder> tempFolderList = new ArrayList<>();
 
-    for (File file : files) {
-      if (file.isDirectory()) {
-        Path filePath = Paths.get(path);
-        BasicFileAttributes attributes = null;
-        try {
-          attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
+    if (files != null) {
+      for (File file : files) {
+        if (file.isDirectory() && !file.getName().startsWith(".")) {
+          Path filePath = Paths.get(path);
+          BasicFileAttributes attributes = null;
+          try {
+            attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
 
-        // Extract and format metadata
-        long createdAt = attributes.creationTime().toMillis();
-        long accessedAt = attributes.lastAccessTime().toMillis();
-        long modifiedAt = attributes.lastModifiedTime().toMillis();
-        int count = Utils.getItemCount(file.getAbsolutePath());
-        String name = file.getName();
-        String parent = file.getParent();
-        Folder folder = new Folder(name, file.getAbsolutePath(), parent, count, createdAt, modifiedAt, accessedAt);
-        tempFolderList.add(folder);
+          // Extract and format metadata
+          long createdAt = attributes.creationTime().toMillis();
+          long accessedAt = attributes.lastAccessTime().toMillis();
+          long modifiedAt = attributes.lastModifiedTime().toMillis();
+          int count = Utils.getItemCount(file.getAbsolutePath());
+          String name = file.getName();
+          String parent = file.getParent();
+          Folder folder = new Folder(name, file.getAbsolutePath(), parent, 0, createdAt, modifiedAt, accessedAt);
+          tempFolderList.add(folder);
+        }
       }
     }
 

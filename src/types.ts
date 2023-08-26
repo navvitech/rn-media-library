@@ -2,6 +2,7 @@ interface AssetConfig {
   limit?: number;
   offset?: number;
   mediaType?: string;
+  palette?: boolean;
 }
 
 interface AlbumConfig {
@@ -20,7 +21,7 @@ interface Asset {
   artwork: string;
   artwork2: string;
   mimeType: string;
-  palette: Array<string>;
+  palette?: Array<string>;
 }
 
 interface Album {

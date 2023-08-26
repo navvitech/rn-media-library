@@ -7,6 +7,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 
+import java.util.Map;
+
 public class RnMediaLibraryModule extends ReactContextBaseJavaModule {
 
   private RnMediaLibraryModuleImpl implementation;
@@ -19,6 +21,11 @@ public class RnMediaLibraryModule extends ReactContextBaseJavaModule {
   @Override
   public String getName() {
     return RnMediaLibraryModuleImpl.NAME;
+  }
+
+  @Override
+  public Map<String, Object> getConstants() {
+    return implementation.getConstants();
   }
 
   @ReactMethod

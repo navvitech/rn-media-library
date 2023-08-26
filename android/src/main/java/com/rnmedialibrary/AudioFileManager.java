@@ -5,6 +5,7 @@ import static com.rnmedialibrary.Utils.getColorFromUri;
 import static com.rnmedialibrary.Utils.getContentUriById;
 import static com.rnmedialibrary.Utils.getGenre;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -42,7 +43,7 @@ public class AudioFileManager {
           if (deletionPromise != null) {
             if (resultCode == Activity.RESULT_CANCELED) {
               deletionPromise.resolve(false);
-              Toast.makeText(activity, "fail", Toast.LENGTH_SHORT).show();
+              Toast.makeText(activity, "failed", Toast.LENGTH_SHORT).show();
             } else if (resultCode == Activity.RESULT_OK) {
               showSuccessToaster(activity);
               deletionPromise.resolve(true);
@@ -76,6 +77,10 @@ public class AudioFileManager {
       while (cursor.moveToNext()) {
         String path = cursor.getString(pathColumn);
         File file = new File(path);
+        if (!file.canWrite()) {
+          deletionPromise.reject(Constants.PERMISSION_ERROR, "Could not delete asset. Require " + Manifest.permission.READ_EXTERNAL_STORAGE);
+          return;
+        }
         if (file.exists() && file.delete()) {
           int numDeleted = resolver.delete(contentUri, selection, selectionArgs);
           if (numDeleted > 0) {
@@ -117,7 +122,7 @@ public class AudioFileManager {
       } catch (SecurityException securityException) {
         IntentSender intentSender = MediaStore.createDeleteRequest(resolver, uri).getIntentSender();
         try {
-          currentActivity.startIntentSenderForResult(intentSender, 7170, null, 0, 0, 0, null);
+          currentActivity.startIntentSenderForResult(intentSender, Constants.DELETE_AUDIO_REQUEST_CODE, null, 0, 0, 0, null);
         } catch (IntentSender.SendIntentException e) {
           throw new RuntimeException(e);
         }
@@ -145,7 +150,7 @@ public class AudioFileManager {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
       IntentSender intentSender = MediaStore.createDeleteRequest(resolver, uriToDelete).getIntentSender();
       try {
-        currentActivity.startIntentSenderForResult(intentSender, 7170, null, 0, 0, 0, null);
+        currentActivity.startIntentSenderForResult(intentSender, Constants.DELETE_AUDIO_REQUEST_CODE, null, 0, 0, 0, null);
       } catch (IntentSender.SendIntentException e) {
         throw new RuntimeException(e);
       }
@@ -155,7 +160,7 @@ public class AudioFileManager {
     }
   }
 
-  private Data<AudioFile> getAudioFiles(int limit, int offset, String selection, String[] selectionArgs) {
+  private Data<AudioFile> getAudioFiles(int limit, int offset, String selection, String[] selectionArgs, boolean hasPalette) {
     Uri collection;
     Data<AudioFile> data = null;
     ArrayList<AudioFile> tempAudioList = new ArrayList<>();
@@ -201,10 +206,16 @@ public class AudioFileManager {
         Uri contentUri = getContentUriById(_id);
         String album_art1 = ContentUris.withAppendedId(albumArtUri, albumId).toString();
         String album_art2 = Uri.parse("content://media/external/audio/media/" + _id + "/albumart").toString();
-        ArrayList<String> palette = getColorFromUri(Uri.parse(album_art1), reactContext);
 
-        AudioFile musicFile = new AudioFile(_id, title, displayName, artist, duration, album, path, contentUri.toString(), album_art1, album_art2, palette);
-        tempAudioList.add(musicFile);
+        if (hasPalette) {
+          ArrayList<String> colorPalette = getColorFromUri(Uri.parse(album_art1), reactContext);
+          AudioFile musicFile = new AudioFile(_id, title, displayName, artist, duration, album, path, contentUri.toString(), album_art1, album_art2, colorPalette);
+          tempAudioList.add(musicFile);
+        } else {
+          AudioFile musicFile = new AudioFile(_id, title, displayName, artist, duration, album, path, contentUri.toString(), album_art1, album_art2);
+          tempAudioList.add(musicFile);
+        }
+
         cursor.moveToNext();
         i++;
       }
@@ -215,8 +226,8 @@ public class AudioFileManager {
     return data;
   }
 
-  public String getData(int limit, int offset) {
-    return gson.toJson(getAudioFiles(limit, offset, null, null));
+  public String getData(int limit, int offset, boolean hasPalette) {
+    return gson.toJson(getAudioFiles(limit, offset, null, null, hasPalette));
   }
 
   public void shareSong(String audioId, Promise promise) {
@@ -326,10 +337,10 @@ public class AudioFileManager {
     return gson.toJson(tempAlbumList);
   }
 
-  public String getAlbumAudio(String albumId) {
+  public String getAlbumAudio(String albumId, boolean hasPalette) {
     String selection = MediaStore.Audio.Media.ALBUM_ID + " = ?";
     String[] selectionArgs = new String[]{String.valueOf(albumId)};
-    return gson.toJson(getAudioFiles(0, 0, selection, selectionArgs));
+    return gson.toJson(getAudioFiles(0, 0, selection, selectionArgs, hasPalette));
   }
 
   public String getArtists() {
@@ -369,7 +380,7 @@ public class AudioFileManager {
   public String getArtistAudio(String artistId) {
     String selection = MediaStore.Audio.Media.ARTIST_ID + " = ?";
     String[] selectionArgs = new String[]{artistId};
-    return gson.toJson(getAudioFiles(0, 0, selection, selectionArgs));
+    return gson.toJson(getAudioFiles(0, 0, selection, selectionArgs, false));
   }
 
   public String getGenres() {
