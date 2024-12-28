@@ -87,4 +87,6 @@ export function checkAllFileAccessPermission(): Promise<boolean> {
   return RnMediaLibrary.checkAllFileAccessPermission();
 }
 
-export const MEDIA_TYPE = NativeModules.RnMediaLibrary.MEDIA_TYPE;
+export const MEDIA_TYPE = isTurboModuleEnabled
+  ? require('./NativeRnMediaLibrary').default.getConstants().MEDIA_TYPE
+  : NativeModules.RnMediaLibrary.MEDIA_TYPE;
