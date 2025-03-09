@@ -135,6 +135,14 @@ public class RnMediaLibraryModuleImpl {
     }
   }
 
+  public void getPalette(String album_art, Promise promise) {
+    try {
+      promise.resolve(audioFileManagerImplementation.getPalette(album_art, promise));
+    } catch (Exception e) {
+      promise.reject(Constants.UNKNOWN_ERROR, e.getMessage(), e);
+    }
+  }
+
   public void getAudioFileInfo(String _id, Promise promise) {
     if (!Utils.isReadExternalStoragePermissionGranted(Constants.MEDIA_TYPE_AUDIO, reactContext)) {
       Utils.rejectWithMessage(Constants.MEDIA_TYPE_AUDIO, promise);

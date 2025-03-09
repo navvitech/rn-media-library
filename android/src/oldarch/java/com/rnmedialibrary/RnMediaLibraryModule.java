@@ -49,6 +49,11 @@ public class RnMediaLibraryModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getPalette(String album_art, Promise promise) {
+    implementation.getPalette(album_art, promise);
+  }
+
+  @ReactMethod
   public void deleteManyAudio(ReadableArray idList, Promise promise) {
     implementation.deleteManyAudio(idList, promise);
   }

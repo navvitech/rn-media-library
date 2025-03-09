@@ -2,7 +2,6 @@ package com.rnmedialibrary;
 
 import android.Manifest;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -69,16 +68,29 @@ class Utils {
     return format;
   }
 
-  static ArrayList<String> getColorFromUri(Uri uri, Context mContext) {
+  static ArrayList<String> getColorFromUri(Uri uri, boolean all, ReactApplicationContext mContext) {
     try {
       Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
       ArrayList<String> colors = new ArrayList<>();
-      int lightVibrantColor = createPaletteSync(bitmap).getLightVibrantColor(0);
-      int darkVibrantColor = createPaletteSync(bitmap).getDarkVibrantColor(0);
-
-      colors.add(extractRGBA(lightVibrantColor));
-      colors.add(extractRGBA(darkVibrantColor));
-
+      if(all){
+         int vibrantColor = createPaletteSync(bitmap).getVibrantColor(0); //accurate 98%
+         int lightVibrantColor = createPaletteSync(bitmap).getLightVibrantColor(0); //accurate 100%
+         int darkVibrantColor = createPaletteSync(bitmap).getDarkVibrantColor(0); //dark version
+         int mutedColor = createPaletteSync(bitmap).getMutedColor(0); //ok can use as seconadary color
+//         int dvibr = createPaletteSync(bitmap).getDarkMutedColor(0);
+//         int dvibr = createPaletteSync(bitmap).getLightMutedColor(0);
+         int dominantColor = createPaletteSync(bitmap).getDominantColor(0); //accurate 99%
+        colors.add(extractRGBA(vibrantColor));
+        colors.add(extractRGBA(lightVibrantColor));
+        colors.add(extractRGBA(darkVibrantColor));
+        colors.add(extractRGBA(dominantColor));
+        colors.add(extractRGBA(mutedColor));
+      }else{
+        int lightVibrantColor = createPaletteSync(bitmap).getLightVibrantColor(0);
+        int darkVibrantColor = createPaletteSync(bitmap).getDarkVibrantColor(0);
+        colors.add(extractRGBA(lightVibrantColor));
+        colors.add(extractRGBA(darkVibrantColor));
+      }
       return colors;
     } catch (Exception e) {
       Log.e("bitmap failure", e.toString());

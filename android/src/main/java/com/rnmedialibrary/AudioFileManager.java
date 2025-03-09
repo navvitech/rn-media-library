@@ -23,10 +23,13 @@ import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AudioFileManager {
 
@@ -208,7 +211,7 @@ public class AudioFileManager {
         String album_art2 = Uri.parse("content://media/external/audio/media/" + _id + "/albumart").toString();
 
         if (hasPalette) {
-          ArrayList<String> colorPalette = getColorFromUri(Uri.parse(album_art1), reactContext);
+          ArrayList<String> colorPalette = getColorFromUri(Uri.parse(album_art1),false, reactContext);
           AudioFile musicFile = new AudioFile(_id, title, displayName, artist, duration, album, path, contentUri.toString(), album_art1, album_art2, colorPalette);
           tempAudioList.add(musicFile);
         } else {
@@ -224,6 +227,21 @@ public class AudioFileManager {
       cursor.close();
     }
     return data;
+  }
+
+  public WritableMap getPalette(String album_art, Promise promise){
+    try {
+      ArrayList<String> colorPalette = getColorFromUri(Uri.parse(album_art),true, reactContext);
+      WritableMap map = new WritableNativeMap();
+      map.putString("vibrantColor", colorPalette.get(0));
+      map.putString("lightVibrantColor", colorPalette.get(1));
+      map.putString("darkVibrantColor", colorPalette.get(2));
+      map.putString("dominantColor", colorPalette.get(3));
+      map.putString("mutedColor", colorPalette.get(4));
+      return map;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public String getData(int limit, int offset, boolean hasPalette) {
@@ -469,7 +487,7 @@ public class AudioFileManager {
         Uri contentUri = getContentUriById(_id);
         String album_art1 = ContentUris.withAppendedId(albumArtUri, albumId).toString();
         String album_art2 = Uri.parse("content://media/external/audio/media/" + _id + "/albumart").toString();
-        ArrayList<String> palette = getColorFromUri(Uri.parse(album_art1), reactContext);
+        ArrayList<String> palette = getColorFromUri(Uri.parse(album_art1),false, reactContext);
 
         AudioFile musicFile = new AudioFile(_id, title, displayName, artist, duration, album, path, contentUri.toString(), album_art1, album_art2, palette);
         tempAudioList.add(musicFile);
