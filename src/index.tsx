@@ -41,6 +41,10 @@ export function getAudioFileInfo(audioId: string): Promise<string> {
   return RnMediaLibrary.getAudioFileInfo(audioId);
 }
 
+export function getPalette(albumArt: string): Promise<string> {
+  return RnMediaLibrary.getPalette(albumArt);
+}
+
 export function deleteManyAudio(uriList: Array<String>): Promise<string> {
   return RnMediaLibrary.deleteManyAudio(uriList);
 }
