@@ -355,10 +355,10 @@ public class AudioFileManager {
     return gson.toJson(tempAlbumList);
   }
 
-  public String getAlbumAudio(String albumId, boolean hasPalette) {
+  public String getAlbumAudio(String albumId, int limit, int offset, boolean hasPalette) {
     String selection = MediaStore.Audio.Media.ALBUM_ID + " = ?";
     String[] selectionArgs = new String[]{String.valueOf(albumId)};
-    return gson.toJson(getAudioFiles(0, 0, selection, selectionArgs, hasPalette));
+    return gson.toJson(getAudioFiles(limit, offset, selection, selectionArgs, hasPalette));
   }
 
   public String getArtists() {

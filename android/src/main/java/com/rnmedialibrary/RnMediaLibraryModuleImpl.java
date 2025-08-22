@@ -186,6 +186,9 @@ public class RnMediaLibraryModuleImpl {
   public void getAlbumAssets(ReadableMap map, String id, Promise promise) {
     String mediaType = Utils.getMediaType(map);
     boolean hasPalette = Utils.hasPaletteKey(map);
+    ArrayList<Integer> limitOffset = getLimitOffset(map);
+    int limit = limitOffset.get(0);
+    int offset = limitOffset.get(1);
 
     if (!Utils.isReadExternalStoragePermissionGranted(mediaType, reactContext)) {
       Utils.rejectWithMessage(mediaType, promise);
@@ -197,7 +200,7 @@ public class RnMediaLibraryModuleImpl {
         String albumImages = imageFileManagerImplementation.getAlbumImages(id);
         promise.resolve(albumImages);
       } else if (Objects.equals(mediaType, Constants.MEDIA_TYPE_AUDIO)) {
-        String albumAudio = audioFileManagerImplementation.getAlbumAudio(id, hasPalette);
+        String albumAudio = audioFileManagerImplementation.getAlbumAudio(id, limit, offset, hasPalette);
         promise.resolve(albumAudio);
       }
     } catch (Exception e) {
