@@ -19,19 +19,18 @@ Check out my dedicated documentation page for all the information about this lib
 ## Usage
 
 ```js
-import { getAssets } from 'rn-media-library';
- 
-// ...
+import { getAssets, MEDIA_TYPE } from "rn-media-library";
  
 // call the function inside the useEffect on mount and set the state
-getAssets({ mediaType: 'audio' })
-  .then((res) => {
+const fetchAssets = async () => {
+  try {
+    const { assets } = await getAssets({ mediaType: MEDIA_TYPE.AUDIO });
     //parse and set the value in the state
-    setAssets(JSON.parse(res));
-  })
-  .catch((error) => {
+    setAssets(JSON.parse(assets));
+  } catch (error) {
     console.log(error);
-  });
+  }
+};
 ```
 
 ## Contributing
